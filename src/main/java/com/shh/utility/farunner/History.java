@@ -25,22 +25,24 @@ public class History {
 		return this.historyList;
 	}
 
-	public void updateHistory(){
+	private void updateHistory(){
 		FileUtils.writeListToFile(historyList, historyFile);
 	}
 	
 	public void updateHistory(String newName){
-		this.historyList.add(newName);
+		if(historyList.contains(newName)){
+			return;
+		}
+		this.historyList.add(0, newName);
+		updateHistory();
 	}
 	
 	public List<String> getSuggestions(String regex) {
 
 		  ArrayList<String> matches = new ArrayList<String>();
 
-		  Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-
 		  for (String name: this.historyList) {
-		    if (pattern.matcher(name).matches()) {
+		    if (name.contains(regex)) {
 		      matches.add(name);
 		    }
 		  }

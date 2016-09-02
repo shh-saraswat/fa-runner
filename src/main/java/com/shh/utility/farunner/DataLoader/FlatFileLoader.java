@@ -21,13 +21,14 @@ public class FlatFileLoader implements Loader {
 	public FlatFileLoader(){
 		metaDataFile = FileUtils.locateFileFromResource(FaRunner.DATA_VALUE_FILE_NAME);
 		dataValue = new HashMap<String, String>();
+		loadDataToMap();
 	}
 	
 	public File getFile() {
 		return metaDataFile;
 	}
 
-	public Map<String, String> loadDataToMap() {	
+	public void loadDataToMap() {	
 	    int flag = 0;
 	    String key = "";
 	    String value;
@@ -37,13 +38,12 @@ public class FlatFileLoader implements Loader {
 	        }else{
 	        		 value = line;
 	        		if(key.isEmpty() || value.isEmpty()){
-	        		return Collections.emptyMap();
+	        			break;
 	        		}
 	        		 dataValue.put(key, value);
 	    	}
 	        	 flag++;
 	    }
-		return dataValue;
 	}
 
 	public Map<String, String> getAppData() {
@@ -56,11 +56,11 @@ public class FlatFileLoader implements Loader {
 	
 	public List<String> getSuggestions(String regex) {
 		ArrayList<String> matches = new ArrayList<String>();
-		Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+
 		Iterator<Entry<String, String>> it = dataValue.entrySet().iterator();
 		while (it.hasNext()) {
 			  Map.Entry pair = (Map.Entry)it.next();
-		    if (pattern.matcher(pair.getKey().toString()).matches()) {
+		    if (pair.getKey().toString().contains(regex)) {
 		    	matches.add(pair.getKey().toString());
 		    }
 		}

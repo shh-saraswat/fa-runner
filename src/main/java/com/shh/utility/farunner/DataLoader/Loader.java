@@ -16,7 +16,7 @@ public interface Loader {
 	 * return Map<String, String>
 	 * Map application/file with there runner file
 	 */	
-	public Map<String, String> loadDataToMap();
+	public void loadDataToMap();
 	
 	/*
 	 * return Map<String, String>
