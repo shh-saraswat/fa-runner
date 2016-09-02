@@ -42,7 +42,7 @@ public class History {
 		  ArrayList<String> matches = new ArrayList<String>();
 
 		  for (String name: this.historyList) {
-		    if (name.contains(regex)) {
+		    if (name.toLowerCase().contains(regex.toLowerCase())) {
 		      matches.add(name);
 		    }
 		  }

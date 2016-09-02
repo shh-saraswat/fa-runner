@@ -60,7 +60,7 @@ public class FlatFileLoader implements Loader {
 		Iterator<Entry<String, String>> it = dataValue.entrySet().iterator();
 		while (it.hasNext()) {
 			  Map.Entry pair = (Map.Entry)it.next();
-		    if (pair.getKey().toString().contains(regex)) {
+		    if (pair.getKey().toString().toLowerCase().contains(regex.toLowerCase())) {
 		    	matches.add(pair.getKey().toString());
 		    }
 		}

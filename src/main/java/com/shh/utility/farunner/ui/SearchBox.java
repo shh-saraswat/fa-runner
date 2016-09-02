@@ -23,6 +23,7 @@ public class SearchBox extends JFrame implements ActionListener, KeyListener {
 	private JTextField searchBoxField;
 	private JButton showSearchButton;
 	private FaRunner faRunner;
+	private String suggestedName = "";
 	
 	public SearchBox(String title, FaRunner faRunner){
 		super(title);
@@ -37,23 +38,46 @@ public class SearchBox extends JFrame implements ActionListener, KeyListener {
 	}
 
 	public void keyReleased(KeyEvent e) {
+		
 		if(e.getKeyCode() == KeyEvent.VK_ENTER){
 			runApp();
 		}
 		else{
-			String searchField = this.searchBoxField.getText().trim();
-			
-			if(searchField.isEmpty()){
+			if(e.getKeyCode() < 32 || e.getKeyCode() > 126 
+					|| e.getKeyCode() == KeyEvent.VK_LEFT
+					|| e.getKeyCode() == KeyEvent.VK_RIGHT
+					|| e.getKeyCode() == KeyEvent.VK_UP
+					|| e.getKeyCode() == KeyEvent.VK_DOWN
+					){
 				return;
+			}
+			String searchField = this.searchBoxField.getText();
+			
+			if(searchField.trim().isEmpty()){
+				return;
+			}
+			
+			while(searchField.charAt(0) == ' '){
+				searchField = searchField.substring(1);
 			}
 			
 			List<String> suggestion = faRunner.getSuggestions(searchField);
 			if(!suggestion.isEmpty()){
-				this.searchBoxField.setText(suggestion.get(0));
-				int selectionStart = searchField.length();
-				int selectionEnd = suggestion.get(0).length();
-
-				searchBoxField.select(selectionStart, selectionEnd);
+				for(String suggest : suggestion){
+					if(suggest.toLowerCase().startsWith(searchField.toLowerCase())){
+						suggestedName = suggestion.get(0);
+						
+						int selectionStart = searchField.length();
+						int selectionEnd = suggestedName.length();
+						
+						searchField = searchField.concat(suggestedName.substring(selectionStart));
+						
+						this.searchBoxField.setText(searchField);
+						
+						searchBoxField.select(selectionStart, selectionEnd);
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -62,6 +86,9 @@ public class SearchBox extends JFrame implements ActionListener, KeyListener {
 		String searchField = this.searchBoxField.getText();
 		if(searchField.isEmpty()){
 			return;
+		}
+		if(suggestedName.equalsIgnoreCase(searchField)){
+			searchField = suggestedName; 
 		}
 		if(faRunner.loadApplicationFile(searchField)){
 			faRunner.runApplication();
@@ -89,8 +116,8 @@ public class SearchBox extends JFrame implements ActionListener, KeyListener {
 		keepWindowAtCenter();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		ImageIcon icon = new ImageIcon(FileUtils.locateFileFromResource(FaRunner.ICON_FILE_NAME).getAbsolutePath());
-		setIconImage(icon.getImage());
+//		ImageIcon icon = new ImageIcon(FileUtils.locateFileFromResource(FaRunner.ICON_FILE_NAME).getAbsolutePath());
+//		setIconImage(icon.getImage());
 	}
 
 
